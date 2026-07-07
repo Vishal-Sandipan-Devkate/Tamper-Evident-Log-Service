@@ -5,7 +5,7 @@ import pinoHttp from "pino-http";
 
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
-
+import logRoutes from "./routes/logRoutes.js";
 const app = express();
 
 app.use(
@@ -19,6 +19,9 @@ app.use(helmet());
 app.use(cors());
 
 app.use(express.json());
+    
+console.log("Registering /log routes");
+app.use("/logs", logRoutes);
 
 app.get("/health", (req, res) => {
   res.status(200).json({
