@@ -6,6 +6,7 @@ import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 
 import { authenticate } from "./middleware/authMiddleware.js";
+import { prisma } from "./config/prisma.js";
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 import logRoutes from "./routes/logRoutes.js";
@@ -34,11 +35,23 @@ app.use(
   swaggerUi.setup(swaggerDocument)
 );
 
-app.get("/health", (req, res) => {
-  res.status(200).json({
-    status: "UP",
-    environment: env.nodeEnv,
-  });
+app.get("/health", async (req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+
+    res.status(200).json({
+      status: "UP",
+      database: "CONNECTED",
+      environment: env.nodeEnv,
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: "DOWN",
+      database: "DISCONNECTED",
+    });
+  }
 });
 
 app.use((req, res) => {
