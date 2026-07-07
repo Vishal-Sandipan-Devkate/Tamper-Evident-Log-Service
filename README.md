@@ -524,6 +524,206 @@ Migrations are automatically applied.
 
 ---
 
+
+
+# API Testing with CURL
+
+> Replace `super-secret-api-key` with your actual API key.
+
+## Health Check
+
+```bash
+curl http://localhost:3000/health
+```
+
+---
+
+## Create Log
+
+```bash
+curl -X POST http://localhost:3000/log \
+-H "Content-Type: application/json" \
+-H "x-api-key: super-secret-api-key" \
+-d '{
+  "actor":"Alice",
+  "action":"LOGIN",
+  "payload":{}
+}'
+```
+
+---
+
+## Create Second Log
+
+```bash
+curl -X POST http://localhost:3000/log \
+-H "Content-Type: application/json" \
+-H "x-api-key: super-secret-api-key" \
+-d '{
+  "actor":"Bob",
+  "action":"UPLOAD",
+  "payload":{
+    "file":"report.pdf"
+  }
+}'
+```
+
+---
+
+## Create Third Log
+
+```bash
+curl -X POST http://localhost:3000/log \
+-H "Content-Type: application/json" \
+-H "x-api-key: super-secret-api-key" \
+-d '{
+  "actor":"Charlie",
+  "action":"DELETE",
+  "payload":{
+    "file":"old.pdf"
+  }
+}'
+```
+
+---
+
+## Get Log by ID
+
+```bash
+curl http://localhost:3000/log/1 \
+-H "x-api-key: super-secret-api-key"
+```
+
+---
+
+## Verify Chain
+
+```bash
+curl http://localhost:3000/log/verify \
+-H "x-api-key: super-secret-api-key"
+```
+
+---
+
+## Export All Logs
+
+```bash
+curl http://localhost:3000/log/export \
+-H "x-api-key: super-secret-api-key"
+```
+
+---
+
+## Export Logs by Actor
+
+```bash
+curl "http://localhost:3000/log/export?actor=Alice" \
+-H "x-api-key: super-secret-api-key"
+```
+
+---
+
+## Export Logs by Date Range
+
+```bash
+curl "http://localhost:3000/log/export?from=2026-01-01&to=2026-12-31" \
+-H "x-api-key: super-secret-api-key"
+```
+
+---
+
+## Export Logs with Pagination
+
+```bash
+curl "http://localhost:3000/log/export?page=1&limit=5" \
+-H "x-api-key: super-secret-api-key"
+```
+
+---
+
+## Export Logs by Actor with Pagination
+
+```bash
+curl "http://localhost:3000/log/export?actor=Alice&page=1&limit=5" \
+-H "x-api-key: super-secret-api-key"
+```
+
+---
+
+## Export Logs by Actor and Date Range
+
+```bash
+curl "http://localhost:3000/log/export?actor=Alice&from=2026-01-01&to=2026-12-31" \
+-H "x-api-key: super-secret-api-key"
+```
+
+---
+
+## Missing API Key
+
+```bash
+curl http://localhost:3000/log/1
+```
+
+---
+
+## Invalid API Key
+
+```bash
+curl http://localhost:3000/log/1 \
+-H "x-api-key: wrong-key"
+```
+
+---
+
+## Validation Error
+
+```bash
+curl -X POST http://localhost:3000/log \
+-H "Content-Type: application/json" \
+-H "x-api-key: super-secret-api-key" \
+-d '{
+  "actor":"",
+  "action":"LOGIN",
+  "payload":{}
+}'
+```
+
+---
+
+## Unknown Route
+
+```bash
+curl http://localhost:3000/unknown
+```
+
+---
+
+## Swagger Documentation
+
+```bash
+curl http://localhost:3000/docs
+```
+
+---
+
+## Rate Limiting Test (11 Requests)
+
+```bash
+for i in {1..11}
+do
+curl -X POST http://localhost:3000/log \
+-H "Content-Type: application/json" \
+-H "x-api-key: super-secret-api-key" \
+-d '{
+  "actor":"RateTest",
+  "action":"LOGIN",
+  "payload":{}
+}'
+echo
+done
+```
+
 # Swagger Documentation
 
 After starting the server, open:
