@@ -4,3 +4,5 @@ coverage
 dist
 .prisma
 *.log
+
+/src/generated/prisma
