@@ -40,6 +40,31 @@ class LogRepository {
 
     }
 
+    async findAll() {
+  return prisma.logEntry.findMany({
+    orderBy: {
+      id: "asc",
+    },
+  });
+}
+
+async count(where) {
+  return prisma.logEntry.count({
+    where,
+  });
+}
+
+async exportLogs(where, skip, take) {
+  return prisma.logEntry.findMany({
+    where,
+    skip,
+    take,
+    orderBy: {
+      id: "asc",
+    },
+  });
+}
+
 }
 
 export default new LogRepository();

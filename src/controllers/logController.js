@@ -5,9 +5,7 @@ import { generateHash } from "../utils/hash.js";
 class LogController {
   async create(req, res, next) {
     try {
-      const data = createLogSchema.parse(req.body);
-
-      const log = await service.createLog(data);
+      const log = await service.createLog(req.bo);
 
       return res.status(201).json({
         id: log.id,
@@ -47,6 +45,29 @@ class LogController {
       next(error);
     }
   }
+
+  async verify(req, res, next) {
+  try {
+
+    const result = await service.verifyChain();
+
+    return res.json(result);
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+async export(req, res, next) {
+  try {
+    const logs = await service.exportLogs(req.query);
+
+    res.json(logs);
+  } catch (error) {
+    next(error);
+  }
+}
+
 }
 
 export default new LogController();

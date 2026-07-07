@@ -3,6 +3,7 @@ import helmet from "helmet";
 import cors from "cors";
 import pinoHttp from "pino-http";
 
+import { authenticate } from "./middleware/authMiddleware.js";
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 import logRoutes from "./routes/logRoutes.js";
@@ -21,7 +22,7 @@ app.use(cors());
 app.use(express.json());
     
 console.log("Registering /log routes");
-app.use("/logs", logRoutes);
+app.use("/log", authenticate, logRoutes);
 
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -40,9 +41,19 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   req.log.error(err);
 
-  res.status(err.status || 500).json({
+  if (err.name === "ZodError") {
+    return res.status(400).json({
+      success: false,
+      errors: err.issues,
+    });
+  }
+
+  return res.status(err.status || 500).json({
     success: false,
-    message: err.message || "Internal Server Error",
+    message:
+      env.nodeEnv === "production"
+        ? "Internal Server Error"
+        : err.message,
   });
 });
 
