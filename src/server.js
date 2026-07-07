@@ -2,6 +2,8 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
 
 import { authenticate } from "./middleware/authMiddleware.js";
 import { env } from "./config/env.js";
@@ -23,6 +25,14 @@ app.use(express.json());
     
 console.log("Registering /log routes");
 app.use("/log", authenticate, logRoutes);
+
+const swaggerDocument = YAML.load("./src/docs/openapi.yaml");
+
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument)
+);
 
 app.get("/health", (req, res) => {
   res.status(200).json({
