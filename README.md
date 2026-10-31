@@ -908,9 +908,7 @@ All generated code was reviewed, tested, and modified where necessary before inc
 
 # License
 
-This project is licensed under the **MIT License**.
-
-Feel free to use, modify, and distribute this project for educational and personal purposes.
+This project is licensed under the MIT License. See the LICENSE file for details.
 
 ---
 
